@@ -2312,6 +2312,7 @@ out:
 	return ret;
 }
 
+// 打开 tun 设备
 static int tun_chr_open(struct inode *inode, struct file * file)
 {
 	struct net *net = current->nsproxy->net_ns;
@@ -2395,8 +2396,10 @@ static const struct file_operations tun_fops = {
 };
 
 static struct miscdevice tun_miscdev = {
+	// 次设备号为 TUN_MINOR（200）
 	.minor = TUN_MINOR,
 	.name = "tun",
+	// 设备地址 /dev/net/tun
 	.nodename = "net/tun",
 	.fops = &tun_fops,
 };

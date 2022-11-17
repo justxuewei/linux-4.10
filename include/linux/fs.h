@@ -1642,6 +1642,7 @@ struct block_device_operations;
 
 struct iov_iter;
 
+// 文件驱动程序，比如有对文件的读取和写入等
 struct file_operations {
 	struct module *owner;
 	loff_t (*llseek) (struct file *, loff_t, int);

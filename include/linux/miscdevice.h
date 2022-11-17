@@ -57,6 +57,8 @@
 struct device;
 struct attribute_group;
 
+// 在Linux驱动中把无法归类的五花八门的设备定义为混杂设备（用miscdevice结构体表
+// 述），miscdevice共享一个主设备号MISC_MAJOR（10），但次设备号不同。 
 struct miscdevice  {
 	int minor;
 	const char *name;

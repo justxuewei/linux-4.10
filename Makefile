@@ -1185,6 +1185,19 @@ ifdef CONFIG_MODULES
 
 all: modules
 
+# Qemu debug
+debug: all
+	@qemu-system-x86_64 -s -S \
+		-kernel ./arch/x86_64/boot/bzImage \
+		-initrd ~/developer/busybox/initramfs.cpio.gz \
+		-nographic \
+		-append "console=ttyS0" \
+		-serial mon:stdio \
+		-device e1000,netdev=net0 \
+		-netdev user,id=net0,hostfwd=tcp::5555-:22
+
+PHONY += debug
+
 # Build modules
 #
 # A module can be listed more than once in obj-m resulting in

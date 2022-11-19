@@ -141,6 +141,11 @@ request_threaded_irq(unsigned int irq, irq_handler_t handler,
 		     unsigned long flags, const char *name, void *dev);
 
 static inline int __must_check
+// 注册一个中断程序
+// @irq 是中断号
+// @handler 是中断处理程序（一个 callback 函数）
+// @name 是中断相关设备的名字
+// @dev 用于共享中断线的中断程序的标识
 request_irq(unsigned int irq, irq_handler_t handler, unsigned long flags,
 	    const char *name, void *dev)
 {

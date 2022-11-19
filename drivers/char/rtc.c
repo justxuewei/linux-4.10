@@ -190,6 +190,7 @@ static int rtc_proc_open(struct inode *inode, struct file *file);
  */
 static unsigned long rtc_status;	/* bitmapped status byte.	*/
 static unsigned long rtc_freq;		/* Current periodic IRQ rate	*/
+// 每次中断函数被执行都会被更新
 static unsigned long rtc_irq_data;	/* our output to the world	*/
 static unsigned long rtc_max_user_freq = 64; /* > this, need CAP_SYS_RESOURCE */
 
@@ -235,7 +236,7 @@ static inline unsigned char rtc_is_updating(void)
  *	architecture should implement in the timer code.
  *	(See ./arch/XXXX/kernel/time.c for the set_rtc_mmss() function.)
  */
-
+// rtc 设备的中断处理函数
 static irqreturn_t rtc_interrupt(int irq, void *dev_id)
 {
 	/*
@@ -244,7 +245,7 @@ static irqreturn_t rtc_interrupt(int irq, void *dev_id)
 	 *	low byte and the number of interrupts received since
 	 *	the last read in the remainder of rtc_irq_data.
 	 */
-
+	// 为了避免 rtc_irq_data 的 data race 的问题
 	spin_lock(&rtc_lock);
 	rtc_irq_data += 0x100;
 	rtc_irq_data &= ~0xff;
@@ -265,6 +266,7 @@ static irqreturn_t rtc_interrupt(int irq, void *dev_id)
 	spin_unlock(&rtc_lock);
 
 	/* Now do the rest of the actions */
+	// 为了避免 rtc_callback 的 data race 的问题
 	spin_lock(&rtc_task_lock);
 	if (rtc_callback)
 		rtc_callback->func(rtc_callback->private_data);
@@ -950,6 +952,7 @@ static void rtc_release_region(void)
 		release_mem_region(RTC_PORT(0), rtc_size);
 }
 
+// 初始化 rtc 中断程序，这里有一个 __init 表示会在 Linux 启动的时候执行注册操作。
 static int __init rtc_init(void)
 {
 #ifdef CONFIG_PROC_FS
@@ -997,6 +1000,12 @@ found:
 	 * XXX Interrupt pin #7 in Espresso is shared between RTC and
 	 * PCI Slot 2 INTA# (and some INTx# in Slot 1).
 	 */
+	// 注册 rtc 中断程序
+	// * 中断号是 rtc_irq
+	// * 中断处理程序是 rtc_intterrupt
+	// * 启用共享中断线
+	// * 名称是 "rtc"
+	// * 设备是 rtc_port
 	if (request_irq(rtc_irq, rtc_interrupt, IRQF_SHARED, "rtc",
 			(void *)&rtc_port)) {
 		rtc_has_irq = 0;

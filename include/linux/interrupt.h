@@ -476,9 +476,10 @@ extern const char * const softirq_to_name[NR_SOFTIRQS];
 /* softirq mask and active fields moved to irq_cpustat_t in
  * asm/hardirq.h to get better cache usage.  KAO
  */
-
+// 软中断处理函数
 struct softirq_action
 {
+	// softirq_action 相当于一个 self
 	void	(*action)(struct softirq_action *);
 };
 
@@ -528,10 +529,16 @@ static inline struct task_struct *this_cpu_ksoftirqd(void)
      he makes it with spinlocks.
  */
 
+// tasklet_struct 是 tasklet 的数据结构
 struct tasklet_struct
 {
+	// 表明数据结构是一个链表
 	struct tasklet_struct *next;
+	// state 的可选值
+	// * TASKLET_STATE_SHCED 表示已经被调度，准备运行
+	// * TASKLET_STATE_RUN 表示正在运行
 	unsigned long state;
+	// count < 
 	atomic_t count;
 	void (*func)(unsigned long);
 	unsigned long data;

@@ -412,6 +412,7 @@ void irq_exit(void)
 /*
  * This function must run with irqs disabled!
  */
+// raise_softirq_irqoff 只能在中断已经被关闭的情况下运行。
 inline void raise_softirq_irqoff(unsigned int nr)
 {
 	__raise_softirq_irqoff(nr);
@@ -429,6 +430,8 @@ inline void raise_softirq_irqoff(unsigned int nr)
 		wakeup_softirqd();
 }
 
+// raise_softirq 可以在任何情况下触发软中断，因为这个方法会在执行前关闭中断，执
+// 行后恢复中断。
 void raise_softirq(unsigned int nr)
 {
 	unsigned long flags;
@@ -444,6 +447,7 @@ void __raise_softirq_irqoff(unsigned int nr)
 	or_softirq_pending(1UL << nr);
 }
 
+// open_softirq 就是简单的将软中断处理函数保存到索引对应的位置
 void open_softirq(int nr, void (*action)(struct softirq_action *))
 {
 	softirq_vec[nr].action = action;
@@ -568,6 +572,7 @@ static __latent_entropy void tasklet_hi_action(struct softirq_action *a)
 	}
 }
 
+// 动态创建一个 tasklet
 void tasklet_init(struct tasklet_struct *t,
 		  void (*func)(unsigned long), unsigned long data)
 {

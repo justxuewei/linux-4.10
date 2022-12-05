@@ -3866,6 +3866,7 @@ EXPORT_SYMBOL(__alloc_pages_nodemask);
 /*
  * Common helper functions.
  */
+// 申请多个连续物理页，不返回物理页 `page` 结构，只返回逻辑地址
 unsigned long __get_free_pages(gfp_t gfp_mask, unsigned int order)
 {
 	struct page *page;
@@ -3883,6 +3884,8 @@ unsigned long __get_free_pages(gfp_t gfp_mask, unsigned int order)
 }
 EXPORT_SYMBOL(__get_free_pages);
 
+// 分配一个物理页（与 `__get_free_page` 相似），但是在分配之后会将物理内存用 0
+// 填充，避免机密数据泄漏。
 unsigned long get_zeroed_page(gfp_t gfp_mask)
 {
 	return __get_free_pages(gfp_mask | __GFP_ZERO, 0);

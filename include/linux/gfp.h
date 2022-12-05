@@ -456,6 +456,10 @@ static inline struct page *alloc_pages_node(int nid, gfp_t gfp_mask,
 #ifdef CONFIG_NUMA
 extern struct page *alloc_pages_current(gfp_t gfp_mask, unsigned order);
 
+// 分配多个连续的物理页
+// @gfp_marsk: 暂时忽略。
+// @order: 分配 2^order 个连续物理页。
+// @return: 返回第一个物理页结构的指针。
 static inline struct page *
 alloc_pages(gfp_t gfp_mask, unsigned int order)
 {

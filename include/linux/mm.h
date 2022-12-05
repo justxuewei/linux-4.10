@@ -999,6 +999,7 @@ static __always_inline void *lowmem_page_address(const struct page *page)
 #endif
 
 #if defined(WANT_PAGE_VIRTUAL)
+// 获取物理页的逻辑地址
 static inline void *page_address(const struct page *page)
 {
 	return page->virtual;

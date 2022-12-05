@@ -29,6 +29,9 @@ struct semaphore {
 #define DEFINE_SEMAPHORE(name)	\
 	struct semaphore name = __SEMAPHORE_INITIALIZER(name, 1)
 
+// 初始化信号量
+// @sem 信号量结构体指针
+// @val 计数器，比如互斥锁是 val 为 1
 static inline void sema_init(struct semaphore *sem, int val)
 {
 	static struct lock_class_key __key;

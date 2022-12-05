@@ -77,6 +77,7 @@ static struct clocksource clocksource_jiffies = {
 __cacheline_aligned_in_smp DEFINE_SEQLOCK(jiffies_lock);
 
 #if (BITS_PER_LONG < 64)
+// jiffies 储存了 Linux 机器启动时间，这是一个使用顺序锁（SeqLock）的例子。
 u64 get_jiffies_64(void)
 {
 	unsigned long seq;

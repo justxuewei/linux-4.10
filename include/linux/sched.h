@@ -204,8 +204,11 @@ extern void proc_sched_set_task(struct task_struct *p);
  * modifying one set can't modify the other one by
  * mistake.
  */
+// 运行状态
 #define TASK_RUNNING		0
+// 可中断的睡眠状态，这里是指可以被任何信号中断，比如 kill -9 之类的。
 #define TASK_INTERRUPTIBLE	1
+// 不可中断的睡眠状态，只能等待信号解锁的方式唤醒，不响应任何信号中断。
 #define TASK_UNINTERRUPTIBLE	2
 #define __TASK_STOPPED		4
 #define __TASK_TRACED		8

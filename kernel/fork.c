@@ -1120,6 +1120,7 @@ void mm_release(struct task_struct *tsk, struct mm_struct *mm)
  * Allocate a new mm structure and copy contents from the
  * mm structure of the passed in task structure.
  */
+ // 深度拷贝 mm_sturct 结构体
 static struct mm_struct *dup_mm(struct task_struct *tsk)
 {
 	struct mm_struct *mm, *oldmm = current->mm;
@@ -1155,6 +1156,7 @@ fail_nomem:
 	return NULL;
 }
 
+// 复制 mm_struct 结构体
 static int copy_mm(unsigned long clone_flags, struct task_struct *tsk)
 {
 	struct mm_struct *mm, *oldmm;
@@ -1181,6 +1183,7 @@ static int copy_mm(unsigned long clone_flags, struct task_struct *tsk)
 	/* initialize the new vmacache entries */
 	vmacache_flush(tsk);
 
+	// 针对线程：父进程和子进程共享内存
 	if (clone_flags & CLONE_VM) {
 		atomic_inc(&oldmm->mm_users);
 		mm = oldmm;
@@ -1188,6 +1191,7 @@ static int copy_mm(unsigned long clone_flags, struct task_struct *tsk)
 	}
 
 	retval = -ENOMEM;
+	// 针对进程：为子进程申请单独内存
 	mm = dup_mm(tsk);
 	if (!mm)
 		goto fail_nomem;
